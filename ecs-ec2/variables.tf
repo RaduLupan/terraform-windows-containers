@@ -9,7 +9,7 @@ variable "region" {
 
 variable "private_subnets" {
   description = "The list of private subnets ids where to use for the ECS cluster"
-  type = list(string)
+  type        = list(string)
 }
 
 #---------------------------------------------------------------
