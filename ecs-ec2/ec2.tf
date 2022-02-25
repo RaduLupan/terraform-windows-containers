@@ -36,14 +36,59 @@ resource "aws_security_group" "launch_config" {
 }
 
 # Create launch configuration for the AutoScaling Group
-resource "aws_launch_configuration" "launch_config" {
+resource "aws_launch_configuration" "windows" {
   #name          = "asg-launch-config"
   image_id      = var.ami_id
   instance_type = var.instance_type
+  
+  security_groups = [aws_security_group.launch_config.id]
 
   user_data       = data.template_file.user_data.rendered
 
   lifecycle {
     create_before_destroy = true
+  }
+}
+
+# Create AutoScaling Group for infrastructure.
+resource "aws_autoscaling_group" "main" {
+  name                 = "${aws_ecs_cluster.ecs_windows.name}-${var.environment}-asg"
+  launch_configuration = aws_launch_configuration.windows.name
+
+  vpc_zone_identifier = var.private_subnets
+
+  min_size         = 0
+  max_size         = 10
+  desired_capacity = 0
+
+  protect_from_scale_in = true
+
+  lifecycle {
+    create_before_destroy = true
+  }
+
+  tag {
+    key                 = "Name"
+    value               = "${aws_ecs_cluster.ecs_windows.name}-${var.environment}-instance"
+    propagate_at_launch = true
+  }
+
+  # Associating an ECS Capacity Provider to an Auto Scaling Group will automatically add the AmazonECSManaged tag to the Auto Scaling Group,
+  # therefore the AmazonECSManaged tag needs to be added to ASG in order to prevent Terraform from removing it in subsequent executions.
+  tag {
+    key                 = "AmazonECSManaged"
+    value               = ""
+    propagate_at_launch = true
+  }
+
+  # Dynamically generates inline tag blocks with for_each.
+  dynamic "tag" {
+    for_each = local.common_tags
+
+    content {
+      key                 = tag.key
+      value               = tag.value
+      propagate_at_launch = true
+    }
   }
 }
