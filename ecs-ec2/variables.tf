@@ -7,6 +7,10 @@ variable "region" {
   type        = string
 }
 
+variable "private_subnets" {
+  description = "The list of private subnets ids where to use for the ECS cluster"
+  type = list(string)
+}
 
 #---------------------------------------------------------------
 # OPTIONAL PARAMETERS: These parameters have resonable defaults.
@@ -18,12 +22,17 @@ variable "environment" {
   default     = "dev"
 }
 
-variable "vpc_cidr" {
-  description = "VPC CIDR Block"
+variable "ami_id" {
+  description = "The id for the ECS-Optimized Windows AMI to use"
   type        = string
-  default     = "10.110.0.0/16"
+  default     = "ami-0370f2bebfe35bd88"
 }
 
+variable "instance_type" {
+  description = "The EC2 instance type to use for the container instances"
+  type        = string
+  default     = "t3.medium"
+}
 variable "project" {
   description = "The name of the project"
   type        = string
