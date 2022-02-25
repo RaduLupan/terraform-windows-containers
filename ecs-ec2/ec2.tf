@@ -3,7 +3,7 @@ data "template_file" "user_data" {
   template = file("${path.module}/user-data.ps1")
 
   vars = {
-    ecs_cluster = aws_ecs_cluster.ecs_windows.name
+    ecs_cluster = local.cluster_name
   }
 }
 
@@ -52,7 +52,7 @@ resource "aws_launch_configuration" "windows" {
 
 # Create AutoScaling Group for infrastructure.
 resource "aws_autoscaling_group" "main" {
-  name                 = "${aws_ecs_cluster.ecs_windows.name}-${var.environment}-asg"
+  name                 = "${local.common_tags["Project"]}-${var.environment}-asg"
   launch_configuration = aws_launch_configuration.windows.name
 
   vpc_zone_identifier = var.private_subnets
@@ -69,7 +69,7 @@ resource "aws_autoscaling_group" "main" {
 
   tag {
     key                 = "Name"
-    value               = "${aws_ecs_cluster.ecs_windows.name}-${var.environment}-instance"
+    value               = "${local.common_tags["Project"]}-${var.environment}-instance"
     propagate_at_launch = true
   }
 
