@@ -14,8 +14,8 @@ resource "aws_security_group" "launch_config" {
   vpc_id      = local.vpc_id
 
   ingress {
-    from_port   = 80
-    to_port     = 80
+    from_port   = var.host_port
+    to_port     = var.host_port
     protocol    = "tcp"
     cidr_blocks = [local.vpc_cidr]
   }
@@ -41,7 +41,8 @@ resource "aws_launch_configuration" "windows" {
   image_id      = var.ami_id
   instance_type = var.instance_type
   
-  security_groups = [aws_security_group.launch_config.id]
+  security_groups      = [aws_security_group.launch_config.id]
+  iam_instance_profile = aws_iam_instance_profile.main.name
 
   user_data       = data.template_file.user_data.rendered
 

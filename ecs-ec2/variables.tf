@@ -9,9 +9,13 @@ variable "region" {
 
 variable "private_subnets" {
   description = "The list of private subnets ids where to use for the ECS cluster"
-  type        = list(string)
+  type = list(string)
 }
 
+variable "host_port" {
+  description = "The port on the container instance security group that needs to be opened"
+  type        = string
+}
 #---------------------------------------------------------------
 # OPTIONAL PARAMETERS: These parameters have resonable defaults.
 #---------------------------------------------------------------
@@ -33,6 +37,7 @@ variable "instance_type" {
   type        = string
   default     = "t3.medium"
 }
+
 variable "project" {
   description = "The name of the project"
   type        = string
