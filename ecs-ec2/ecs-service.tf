@@ -48,3 +48,37 @@ data "template_file" "container_definition" {
     stream_prefix  = var.project
   }
 }
+
+# Task definition.
+resource "aws_ecs_task_definition" "main" {
+  family                   = "${var.app_name}-task"
+  requires_compatibilities = ["EC2"]
+  task_role_arn            = aws_iam_role.execution.arn
+  container_definitions    = data.template_file.container_definition.rendered
+}
+
+# ECS service.
+resource "aws_ecs_service" "main" {
+  name            = "${var.app_name}-service"
+  cluster         = aws_ecs_cluster.main.arn
+  task_definition = aws_ecs_task_definition.main.arn
+  desired_count   = var.desired_count
+  
+  ordered_placement_strategy {
+    type  = "binpack"
+    field = "cpu"
+  }
+
+  capacity_provider_strategy {
+    base = 1
+    weight = 100
+    capacity_provider = aws_ecs_capacity_provider.first.name
+  }
+  
+  load_balancer {
+    target_group_arn = aws_lb_target_group.main.arn
+    container_name   = var.app_name
+    container_port   = var.container_port
+  }
+
+}
