@@ -8,7 +8,12 @@ variable "region" {
 }
 
 variable "private_subnets" {
-  description = "The list of private subnets ids where to use for the ECS cluster"
+  description = "The list of private subnets ids to use for the ECS cluster"
+  type = list(string)
+}
+
+variable "public_subnets" {
+  description = "The list of public subnets ids to use for the load balancer"
   type = list(string)
 }
 
@@ -49,6 +54,11 @@ variable "task_memory_mb" {
 
 variable "task_cpu_units" {
   description = "CPU units allocated to a task"
+  type        = number
+}
+
+variable "desired_count" {
+  description = "The desired number of tasks"
   type        = number
 }
 
