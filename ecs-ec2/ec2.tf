@@ -27,12 +27,7 @@ resource "aws_security_group" "launch_config" {
     cidr_blocks = ["0.0.0.0/0"]
   }
 
-  tags = {
-    Name        = "ecs-cluster-instance-sg"
-    Environment = var.environment
-    Project     = var.project
-    Terraform   = true
-  }
+  tags = local.common_tags
 }
 
 # Create launch configuration for the AutoScaling Group
