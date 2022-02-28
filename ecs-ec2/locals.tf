@@ -4,6 +4,16 @@ locals {
   
   cluster_name = "${local.common_tags["Project"]}-cluster"
 
+  any_port     = 0
+  any_protocol = "-1"
+  tcp_protocol = "tcp"
+  all_ips      = ["0.0.0.0/0"]
+
+  ports_source_map = {
+    "443"  = "0.0.0.0/0"
+    "80"   = "0.0.0.0/0"
+  }
+
   region= data.aws_region.current.name
 
   common_tags = {
