@@ -7,3 +7,70 @@ data "aws_subnet" "selected" {
 data "aws_vpc" "selected" {
   id = local.vpc_id
 }
+
+# Create target group for the ALB in front of the ECS service.
+resource "aws_lb_target_group" "main" {
+  name     = "ecs-service-tg"
+  port     = var.host_port
+  protocol = "HTTP"
+  vpc_id   = local.vpc_id
+
+  tags = local.common_tags
+}
+
+# Create security group for the ECS service ALB.
+resource "aws_security_group" "alb" {
+  name   = "ecs-service-alb-sg"
+  vpc_id = local.vpc_id
+
+  tags = local.common_tags
+}   
+
+# Create ingress rules for the ALB security group.
+resource "aws_security_group_rule" "ingress" {
+  for_each = local.ports_source_map
+
+  type              = "ingress"
+  description       = "Inbound TCP ${each.key}"
+  security_group_id = aws_security_group.alb.id
+
+  from_port   = each.key
+  to_port     = each.key
+  protocol    = local.tcp_protocol
+  cidr_blocks = [each.value]
+}
+
+# Create egress rule for the ALB security group: allow all outbound traffic.
+resource "aws_security_group_rule" "allow_all_outbound" {
+  type              = "egress"
+  security_group_id = aws_security_group.alb.id
+
+  from_port   = local.any_port
+  to_port     = local.any_port
+  protocol    = local.any_protocol
+  cidr_blocks = local.all_ips
+}
+
+# Create ALB for the ECS service.
+resource "aws_lb" "main" {
+  name               = "ecs-service-alb"
+  internal           = false
+  load_balancer_type = "application"
+  security_groups    = [aws_security_group.alb.id]
+  subnets            = var.public_subnets
+
+  enable_deletion_protection = false
+
+  tags = local.common_tags
+}
+
+resource "aws_lb_listener" "http" {
+  load_balancer_arn = aws_lb.main.arn
+  port              = "80"
+  protocol          = "HTTP"
+
+  default_action {
+    type             = "forward"
+    target_group_arn = aws_lb_target_group.main.arn
+  }
+}
