@@ -13,8 +13,13 @@ variable "private_subnets" {
 }
 
 variable "host_port" {
-  description = "The port on the container instance security group that needs to be opened"
+  description = "The port exposed by the container host"
   type        = string
+}
+
+variable "container_port" {
+  description = "The port exposed by the container"
+  type        = number
 }
 #---------------------------------------------------------------
 # OPTIONAL PARAMETERS: These parameters have resonable defaults.
