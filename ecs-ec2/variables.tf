@@ -14,13 +14,44 @@ variable "private_subnets" {
 
 variable "host_port" {
   description = "The port exposed by the container host"
-  type        = string
+  type        = number
 }
 
 variable "container_port" {
   description = "The port exposed by the container"
   type        = number
 }
+
+variable "app_name" {
+  description = "The name of the container app"
+  type        = string
+}
+
+variable "app_image" {
+  description = "The image URI:tag in the ECR/MCR registry"
+  type        = string
+}
+
+variable "app_protocol" {
+  description = "The transport protocol used by the container app (tcp or udp)"
+  type        = string
+}
+
+variable "app_command" {
+    description = "Container command"
+    type        = string
+}
+
+variable "task_memory_mb" {
+  description = "Memory allocated to a task in MB"
+  type        = number
+}
+
+variable "task_cpu_units" {
+  description = "CPU units allocated to a task"
+  type        = number
+}
+
 #---------------------------------------------------------------
 # OPTIONAL PARAMETERS: These parameters have resonable defaults.
 #---------------------------------------------------------------
