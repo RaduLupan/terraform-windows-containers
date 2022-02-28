@@ -11,7 +11,7 @@ resource "aws_ecs_cluster" "main" {
 }
 
 # Specify capacity provider and strategy.
-resource "aws_ecs_cluster_capacity_providers" "first" {
+resource "aws_ecs_cluster_capacity_providers" "main" {
   cluster_name = aws_ecs_cluster.main.name
   
   capacity_providers = [aws_ecs_capacity_provider.first.name]
