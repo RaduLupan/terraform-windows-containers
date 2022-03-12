@@ -8,12 +8,25 @@ data "aws_vpc" "selected" {
   id = local.vpc_id
 }
 
-# Create target group for the ALB in front of the ECS service.
-resource "aws_lb_target_group" "main" {
-  name     = "ecs-service-tg"
+# Create HTTP target group for the ALB in front of the ECS service.
+resource "aws_lb_target_group" "http" {
+  name     = "${var.project}-http-tg"
   port     = var.host_port
   protocol = "HTTP"
+  
+  target_type = "ip"
+  
   vpc_id   = local.vpc_id
+
+  health_check {
+    healthy_threshold   = var.health_check_healthy_threshold
+    interval            = var.health_check_interval
+    protocol            = "HTTP"
+    matcher             = "200"
+    timeout             = var.health_check_timeout
+    path                = var.health_check_path
+    unhealthy_threshold = var.health_check_unhealthy_threshold
+  }
 
   tags = local.common_tags
 }
@@ -53,7 +66,7 @@ resource "aws_security_group_rule" "allow_all_outbound" {
 
 # Create ALB for the ECS service.
 resource "aws_lb" "main" {
-  name               = "ecs-service-alb"
+  name               = "${var.project}-${var.environment}-ecs-alb"
   internal           = false
   load_balancer_type = "application"
   security_groups    = [aws_security_group.alb.id]
@@ -71,6 +84,22 @@ resource "aws_lb_listener" "http" {
 
   default_action {
     type             = "forward"
-    target_group_arn = aws_lb_target_group.main.arn
+    target_group_arn = aws_lb_target_group.http.arn
+  }
+}
+
+# Create HTTPS listener if tls_cert_arn is not null.
+resource "aws_lb_listener" "front_end" {
+  count = var.tls_cert_arn == null ? 0 : 1
+  
+  load_balancer_arn = aws_lb.main.arn
+  port              = "443"
+  protocol          = "HTTPS"
+  ssl_policy        = "ELBSecurityPolicy-2016-08"
+  certificate_arn   = var.tls_cert_arn
+
+  default_action {
+    type             = "forward"
+    target_group_arn = aws_lb_target_group.http.arn
   }
 }
