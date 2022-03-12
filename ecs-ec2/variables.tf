@@ -42,11 +42,6 @@ variable "app_protocol" {
   type        = string
 }
 
-variable "app_command" {
-    description = "Container command"
-    type        = string
-}
-
 variable "task_memory_mb" {
   description = "Memory allocated to a task in MB"
   type        = number

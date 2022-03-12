@@ -40,7 +40,6 @@ data "template_file" "container_definition" {
     container_port = var.container_port
     host_port      = var.host_port
     app_protocol   = var.app_protocol
-    app_command    = var.app_command
     app_memory     = var.task_memory_mb
     app_cpu        = var.task_cpu_units
     log_group      = aws_cloudwatch_log_group.lg.name
