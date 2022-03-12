@@ -62,6 +62,11 @@ variable "desired_count" {
   type        = number
 }
 
+variable "health_check_port" {
+  description = "The health check port"
+  type        = string
+}
+
 #---------------------------------------------------------------
 # OPTIONAL PARAMETERS: These parameters have resonable defaults.
 #---------------------------------------------------------------
@@ -88,4 +93,40 @@ variable "project" {
   description = "The name of the project"
   type        = string
   default     = "ecs-windows-poc"
+}
+
+variable "tls_cert_arn" {
+  description = "The arn of the TLS certificate in ACM to use on the ALB. If null no HTTPS listener will be created."
+  type        = string
+  default     = null
+}
+
+variable "health_check_interval" {
+  description = "The approximate amount of time, in seconds, between health checks of an individual target: 5-300"
+  type        = string
+  default     = "30"
+}
+
+variable "health_check_timeout" {
+  description = "The amount of time, in seconds, during which no response means a failed health check: 2-120"
+  type        = string
+  default     = "10"
+}
+
+variable "health_check_unhealthy_threshold" {
+  description = "The number of consecutive health check failures required before considering a target unhealthy: 2-10"
+  type        = string
+  default     = "2"
+}
+
+variable "health_check_healthy_threshold" {
+  description = "The number of consecutive health checks successes required before considering an unhealthy target healthy.: 2-10"
+  type        = string
+  default     = "3"
+}
+
+variable "health_check_path" {
+  description = "Use the default path of / to ping the root, or specify a custom path if preferred."
+  type        = string
+  default     = "/"
 }
