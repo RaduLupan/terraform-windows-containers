@@ -11,6 +11,13 @@ resource "aws_security_group" "main" {
     cidr_blocks = [local.vpc_cidr]
   }
 
+  ingress {
+    from_port   = var.health_check_port
+    to_port     = var.health_check_port
+    protocol    = "tcp"
+    cidr_blocks = [local.vpc_cidr]
+  }
+
   egress {
     from_port   = 0
     to_port     = 0
@@ -52,6 +59,7 @@ data "template_file" "container_definition" {
 resource "aws_ecs_task_definition" "main" {
   family                   = "${var.app_name}-task"
   requires_compatibilities = ["EC2"]
+  network_mode             = "awsvpc"
   task_role_arn            = aws_iam_role.execution.arn
   container_definitions    = data.template_file.container_definition.rendered
 }
@@ -74,10 +82,18 @@ resource "aws_ecs_service" "main" {
     capacity_provider = aws_ecs_capacity_provider.first.name
   }
   
+  # Seconds to ignore failing load balancer health checks on newly instantiated tasks to prevent premature shutdown. Only valid for services configured to use load balancers.
+  health_check_grace_period_seconds = 180
+
   load_balancer {
-    target_group_arn = aws_lb_target_group.main.arn
+    target_group_arn = aws_lb_target_group.http.arn
     container_name   = var.app_name
     container_port   = var.container_port
   }
 
+  network_configuration {
+    subnets = var.private_subnets
+    security_groups = [aws_security_group.main.id]
+  }
 }
+
