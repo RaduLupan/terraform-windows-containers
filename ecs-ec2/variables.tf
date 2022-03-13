@@ -73,9 +73,9 @@ variable "environment" {
 }
 
 variable "ami_id" {
-  description = "The id for the ECS-Optimized Windows AMI to use"
+  description = "The id for the ECS-Optimized Windows AMI to use. If null the latest Windows Server 2022 ECS-optimized image is used."
   type        = string
-  default     = "ami-0370f2bebfe35bd88"
+  default     = null
 }
 
 variable "instance_type" {

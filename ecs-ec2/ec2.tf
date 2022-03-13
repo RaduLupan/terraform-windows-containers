@@ -32,8 +32,7 @@ resource "aws_security_group" "launch_config" {
 
 # Create launch configuration for the AutoScaling Group
 resource "aws_launch_configuration" "windows" {
-  #name          = "asg-launch-config"
-  image_id      = var.ami_id
+  image_id      = local.ami_id
   instance_type = var.instance_type
   
   security_groups      = [aws_security_group.launch_config.id]
