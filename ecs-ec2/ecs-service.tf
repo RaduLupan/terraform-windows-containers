@@ -4,28 +4,43 @@ resource "aws_security_group" "main" {
   description = "Allow inbound traffic"
   vpc_id      = local.vpc_id
 
-  ingress {
-    from_port   = var.container_port
-    to_port     = var.container_port
-    protocol    = "tcp"
-    cidr_blocks = [local.vpc_cidr]
-  }
-
-  ingress {
-    from_port   = var.health_check_port
-    to_port     = var.health_check_port
-    protocol    = "tcp"
-    cidr_blocks = [local.vpc_cidr]
-  }
-
-  egress {
-    from_port   = 0
-    to_port     = 0
-    protocol    = "-1"
-    cidr_blocks = ["0.0.0.0/0"]
-  }
-
   tags = local.common_tags
+}
+
+resource "aws_security_group_rule" "container_inbound" {
+  type              = "ingress"
+  description       = "Container Inbound"
+  security_group_id = aws_security_group.main.id
+
+  from_port   = var.container_port
+  to_port     = var.container_port
+  protocol    = "tcp"
+  cidr_blocks = [local.vpc_cidr]
+}
+
+# Create separate security rule for health_check only if health_check_port different than container_port.
+resource "aws_security_group_rule" "health_check_inbound" {
+  count = var.container_port == var.health_check_port ? 0 : 1
+
+  type              = "ingress"
+  description       = "Health Check Inbound"
+  security_group_id = aws_security_group.main.id
+
+  from_port   = var.health_check_port
+  to_port     = var.health_check_port
+  protocol    = "tcp"
+  cidr_blocks = [local.vpc_cidr]
+}
+
+# Allows all outbound requests. 
+resource "aws_security_group_rule" "ecs_all_outbound" {
+  type              = "egress"
+  security_group_id = aws_security_group.main.id
+
+  from_port   = local.any_port
+  to_port     = local.any_port
+  protocol    = local.any_protocol
+  cidr_blocks = local.all_ips
 }
 
 # CloudWatch log group.
