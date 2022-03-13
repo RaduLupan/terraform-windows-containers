@@ -59,7 +59,7 @@ variable "desired_count" {
 
 variable "health_check_port" {
   description = "The health check port"
-  type        = string
+  type        = number
 }
 
 #---------------------------------------------------------------
