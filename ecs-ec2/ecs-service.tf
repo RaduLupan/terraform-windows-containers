@@ -18,7 +18,7 @@ resource "aws_security_group_rule" "container_inbound" {
   cidr_blocks = [local.vpc_cidr]
 }
 
-# Create separate security rule for health_check only if health_check_port different than container_port.
+# Create separate security rule for health_check only if health_check_port is different than container_port.
 resource "aws_security_group_rule" "health_check_inbound" {
   count = var.container_port == var.health_check_port ? 0 : 1
 

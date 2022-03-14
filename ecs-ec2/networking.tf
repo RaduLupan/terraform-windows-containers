@@ -54,7 +54,7 @@ resource "aws_security_group_rule" "ingress" {
 }
 
 # Create egress rule for the ALB security group: allow all outbound traffic.
-resource "aws_security_group_rule" "all_outbound" {
+resource "aws_security_group_rule" "alb_all_outbound" {
   type              = "egress"
   security_group_id = aws_security_group.alb.id
 
