@@ -75,7 +75,7 @@ variable "environment" {
 variable "project" {
   description = "The name of the project"
   type        = string
-  default     = "windows-ecs-fargate-poc"
+  default     = "windows-fargate"
 }
 
 variable "tls_cert_arn" {
