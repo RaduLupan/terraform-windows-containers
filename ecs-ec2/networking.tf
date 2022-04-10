@@ -1,4 +1,4 @@
-# Use this dat source to get the vpc_id from the first subnet id provided in the private_subnets variable.
+# Use this data source to get the vpc_id from the first subnet id provided in the private_subnets variable.
 data "aws_subnet" "selected" {
   id = var.private_subnets[0]
 }
