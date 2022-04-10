@@ -27,5 +27,5 @@ variable "vpc_cidr" {
 variable "project" {
   description = "The name of the project"
   type        = string
-  default     = "fargate-windows-poc"
+  default     = "windows-containers-poc"
 }
