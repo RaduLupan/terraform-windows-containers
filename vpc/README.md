@@ -25,3 +25,20 @@ Windows:
 PS $env:AWS_ACCESS_KEY_ID=<Your AWS_ACCESS_KEY_ID>
 PS $env:AWS_SECRET_ACCESS_KEY=<Your AWS_SECRET_ACCESS_KEY>
 ```
+
+2. Clone this repository:
+```
+$ git clone https://github.com/RaduLupan/terraform-windows-containers.git
+```
+
+3. Deploy the VPC in your preffered AWS region:
+```
+$ cd vpc
+$ terraform init
+$ terraform apply
+```
+
+4. (Optional) Clean up when you are done:
+```
+$ terraform destroy
+```
