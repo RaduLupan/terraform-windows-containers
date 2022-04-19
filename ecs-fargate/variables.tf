@@ -52,6 +52,16 @@ variable "task_cpu_units" {
   type        = number
 }
 
+variable "operating_system_family" {
+  description = "The operating system family to use with Fargate"
+  type        = string
+
+  validation {
+    condition     = contains(["LINUX","WINDOWS_SERVER_2019_FULL","WINDOWS_SERVER_2019_CORE"], var.operating_system_family)
+    error_message = "The operating system family must be set to a valid option: LINUX, WINDOWS_SERVER_2019_FULL or WINDOWS_SERVER_2019_CORE."  
+  }
+}
+
 variable "desired_count" {
   description = "The desired number of tasks"
   type        = number
