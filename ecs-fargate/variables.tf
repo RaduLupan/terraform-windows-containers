@@ -48,8 +48,13 @@ variable "task_memory_mb" {
 }
 
 variable "task_cpu_units" {
-  description = "CPU units allocated to a task"
+  description = "CPU units allocated to a task: 1024 (1xvCPU), 2048 (2xvCPU) or 4096 (4xvCPU)"
   type        = number
+
+  validation {
+    condition     = contains([1024,2048,4096], var.task_cpu_units)
+    error_message = "The following sizes are available for Fargate for Windows-based tasks: 1024, 2048 or 4096 CPU units." 
+  }
 }
 
 variable "operating_system_family" {
