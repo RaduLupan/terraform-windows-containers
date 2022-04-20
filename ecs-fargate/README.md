@@ -10,7 +10,7 @@ This folder contains Terraform configurations that show an example of how to run
 
 * [Amazon Web Services (AWS) account](http://aws.amazon.com/).
 * Terraform 1.0 or later installed on your computer. Check out HasiCorp [documentation](https://learn.hashicorp.com/terraform/azure/install) on how to install Terraform.
-* An [AWS VPC](https://docs.aws.amazon.com/vpc/latest/userguide/what-is-amazon-vpc.html) with public and private subnets. 
+* An [AWS VPC](https://docs.aws.amazon.com/vpc/latest/userguide/what-is-amazon-vpc.html) with public and private subnets. Please check the [vpc](https://github.com/RaduLupan/terraform-windows-containers/tree/main/vpc) folder for an example on how to deploy a VPC.
 
 ## Quick start
 
@@ -74,3 +74,5 @@ http://<ecs_alb_dns_name>
 ```
 $ terraform destroy
 ```
+## References
+AWS Blogs: [Running Windows Containers with Amazon ECS on AWS Fargate](https://aws.amazon.com/blogs/containers/running-windows-containers-with-amazon-ecs-on-aws-fargate/)
