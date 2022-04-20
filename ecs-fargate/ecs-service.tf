@@ -93,3 +93,30 @@ resource "aws_ecs_task_definition" "main" {
   container_definitions    = data.template_file.container_definition.rendered
 }
 
+# ECS service.
+resource "aws_ecs_service" "main" {
+  name            = "${var.app_name}-service"
+  cluster         = aws_ecs_cluster.main.arn
+  task_definition = aws_ecs_task_definition.main.arn
+  desired_count   = var.desired_count
+  
+  capacity_provider_strategy {
+    base = 1
+    weight = 100
+    capacity_provider = "FARGATE"
+  }
+  
+  # Seconds to ignore failing load balancer health checks on newly instantiated tasks to prevent premature shutdown. Only valid for services configured to use load balancers.
+  health_check_grace_period_seconds = 180
+
+  load_balancer {
+    target_group_arn = aws_lb_target_group.http.arn
+    container_name   = var.app_name
+    container_port   = var.container_port
+  }
+
+  network_configuration {
+    subnets = var.private_subnets
+    security_groups = [aws_security_group.main.id]
+  }
+}
