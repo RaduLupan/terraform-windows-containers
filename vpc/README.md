@@ -6,7 +6,6 @@ This folder contains Terraform configurations that show how to create a [Virtual
 
 * [Amazon Web Services (AWS) account](http://aws.amazon.com/).
 * Terraform 1.0 or later installed on your computer. Check out HasiCorp [documentation](https://learn.hashicorp.com/terraform/azure/install) on how to install Terraform.
-* An [AWS VPC](https://docs.aws.amazon.com/vpc/latest/userguide/what-is-amazon-vpc.html) with public and private subnets. For testing the Studo Public Web app the VPC ID ```vpc-20c1ca59``` (Q4WEB-DEV-VPC-VPC) in ```q4web-devtest``` account is required.
 
 ## Quick start
 
