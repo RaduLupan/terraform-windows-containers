@@ -22,6 +22,7 @@ resource "aws_lb_target_group" "http" {
     healthy_threshold   = var.health_check_healthy_threshold
     interval            = var.health_check_interval
     protocol            = "HTTP"
+    port                = var.health_check_port
     matcher             = "200"
     timeout             = var.health_check_timeout
     path                = var.health_check_path
